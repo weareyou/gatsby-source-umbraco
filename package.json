@@ -7,7 +7,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "dependencies": {},
+  "dependencies": {
+    "axios": "^0.19.0"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/weareyou/umbraco-headless-jamstack.git"
