@@ -1,5 +1,6 @@
-const validateAndPrepOptions = require('./util/validate-and-prep-options')
+const validateAndPrepOptions = require("./util/validate-and-prep-options")
 
 exports.sourceNodes = ({ actions }, options) => {
-    options = validateAndPrepOptions(options)
+  const { createNode } = actions
+  options = validateAndPrepOptions(options)
 }
