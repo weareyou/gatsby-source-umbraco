@@ -1,0 +1,18 @@
+{
+  "name": "gatsby-source-umbraco",
+  "private": true,
+  "description": "",
+  "version": "0.1.0",
+  "license": "UNLICENSED",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/weareyou/umbraco-headless-jamstack.git"
+  },
+  "bugs": {
+    "url": "https://github.com/weareyou/umbraco-headless-jamstack/issues"
+  }
+}
