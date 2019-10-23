@@ -37,8 +37,6 @@ async function loadNodeRecursive(actions, axios, sitemapNode, parent = {}) {
     children: [],
     internal: {
       type,
-      mediaType: "application/json",
-      content: JSON.stringify(data),
       contentDigest: createContentDigest(data),
     },
   }
