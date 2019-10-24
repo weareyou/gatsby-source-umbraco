@@ -17,6 +17,9 @@ exports.createSchemaCustomization = ({ actions, schema }) => {
   createTypes([
     `interface ${interfaceType} @nodeInterface {
       id: ID!
+      parent: Node
+      children: [Node!]!
+      internal: Internal!
       slug: String
     }`,
     ...concreteTypes,
