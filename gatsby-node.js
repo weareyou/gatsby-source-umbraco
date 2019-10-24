@@ -1,6 +1,25 @@
 const validateAndPrepOptions = require("./util/validate-and-prep-options")
 const createAndConfigureAxios = require("./util/create-and-configure-axios")
 
+const nodeTypes = []
+
+exports.createSchemaCustomization = ({ actions, schema }) => {
+  const { createTypes } = actions
+  const interfaceType = "UmbracoNode"
+
+  const concreteTypes = nodeTypes.map(type => {
+      return schema.buildObjectType({ name: type, interfaces: ["Node", interfaceType] })
+    })
+
+  createTypes([
+    `interface ${interfaceType} @nodeInterface {
+      id: ID!
+      path: String
+    }`,
+    ...concreteTypes
+  ])
+}
+
 exports.sourceNodes = async (
   { actions, createNodeId, createContentDigest },
   options
@@ -47,6 +66,7 @@ async function loadNodeRecursive(actions, axios, sitemapNode, parent = {}) {
     data,
   }
   createNode(node)
+  registerType(type)
 
   if (parent.id) createParentChildLink({ parent, child: node })
 
@@ -71,5 +91,11 @@ function toUpperFirst(string) {
 const asyncForEach = async (array, callback) => {
   for (let index = 0; index < array.length; index++) {
     await callback(array[index], index, array)
+  }
+}
+
+function registerType(type) {
+  if (nodeTypes.indexOf(type) === -1) {
+    nodeTypes.push(type)
   }
 }
