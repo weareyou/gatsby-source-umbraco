@@ -14,7 +14,7 @@ exports.createSchemaCustomization = ({ actions, schema }) => {
   createTypes([
     `interface ${interfaceType} @nodeInterface {
       id: ID!
-      path: String
+      slug: String
     }`,
     ...concreteTypes
   ])
@@ -43,12 +43,12 @@ async function loadNodeRecursive(actions, axios, sitemapNode, parent = {}) {
     createContentDigest,
   } = actions
 
-  const path = getPathForSitemapNode(sitemapNode, parent)
+  const slug = getSlugForSitemapNode(sitemapNode, parent)
   const type = toUpperFirst(sitemapNode.type)
-  const { data } = await axios.get(path)
+  const { data } = await axios.get(slug)
 
   const umbracoMeta = {
-    path,
+    slug,
   }
   const nodeMeta = {
     id: createNodeId(`umbraco-${sitemapNode.id}`),
@@ -78,10 +78,10 @@ async function loadNodeRecursive(actions, axios, sitemapNode, parent = {}) {
   }
 }
 
-function getPathForSitemapNode(sitemapNode, parent) {
-  let path = (parent.path || "") + "/" + sitemapNode.slug
-  if (path.indexOf("//") == 0) path = path.substr(1)
-  return path
+function getSlugForSitemapNode(sitemapNode, parent) {
+  let slug = (parent.slug || "") + "/" + sitemapNode.slug
+  if (slug.indexOf("//") == 0) slug = slug.substr(1)
+  return slug
 }
 
 function toUpperFirst(string) {
