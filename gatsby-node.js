@@ -3,6 +3,21 @@ const createAndConfigureAxios = require("./util/create-and-configure-axios")
 
 const nodeTypes = []
 
+exports.sourceNodes = async (
+  { actions, createNodeId, createContentDigest },
+  options
+) => {
+  const { createNode, createParentChildLink } = actions
+  options = validateAndPrepOptions(options)
+  const axios = createAndConfigureAxios(options)
+  const { data: sitemap } = await axios.get("/sitemap")
+  return loadNodeRecursive(
+    { createNode, createParentChildLink, createNodeId, createContentDigest },
+    axios,
+    sitemap.root
+  )
+}
+
 exports.createSchemaCustomization = ({ actions, schema }) => {
   const { createTypes } = actions
   const interfaceType = "UmbracoNode"
@@ -24,21 +39,6 @@ exports.createSchemaCustomization = ({ actions, schema }) => {
     }`,
     ...concreteTypes,
   ])
-}
-
-exports.sourceNodes = async (
-  { actions, createNodeId, createContentDigest },
-  options
-) => {
-  const { createNode, createParentChildLink } = actions
-  options = validateAndPrepOptions(options)
-  const axios = createAndConfigureAxios(options)
-  const { data: sitemap } = await axios.get("/sitemap")
-  return loadNodeRecursive(
-    { createNode, createParentChildLink, createNodeId, createContentDigest },
-    axios,
-    sitemap.root
-  )
 }
 
 async function loadNodeRecursive(actions, axios, sitemapNode, parent = {}) {
