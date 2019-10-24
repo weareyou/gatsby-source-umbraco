@@ -63,7 +63,7 @@ async function loadNodeRecursive(actions, axios, sitemapNode, parent = {}) {
   const node = {
     ...nodeMeta,
     ...umbracoMeta,
-    data,
+    ...data,
   }
   createNode(node)
   registerType(type)
