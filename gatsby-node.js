@@ -8,15 +8,18 @@ exports.createSchemaCustomization = ({ actions, schema }) => {
   const interfaceType = "UmbracoNode"
 
   const concreteTypes = nodeTypes.map(type => {
-      return schema.buildObjectType({ name: type, interfaces: ["Node", interfaceType] })
+    return schema.buildObjectType({
+      name: type,
+      interfaces: ["Node", interfaceType],
     })
+  })
 
   createTypes([
     `interface ${interfaceType} @nodeInterface {
       id: ID!
       slug: String
     }`,
-    ...concreteTypes
+    ...concreteTypes,
   ])
 }
 
@@ -88,7 +91,7 @@ function toUpperFirst(string) {
   return string.charAt(0).toUpperCase() + string.slice(1)
 }
 
-const asyncForEach = async (array, callback) => {
+async function asyncForEach(array, callback) {
   for (let index = 0; index < array.length; index++) {
     await callback(array[index], index, array)
   }
