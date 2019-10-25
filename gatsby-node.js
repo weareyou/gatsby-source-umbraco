@@ -10,12 +10,16 @@ exports.sourceNodes = async (
   const { createNode, createParentChildLink } = actions
   options = validateAndPrepOptions(options)
   const axios = createAndConfigureAxios(options)
+  const helpers = {
+    createNode,
+    createParentChildLink,
+    createNodeId,
+    createContentDigest,
+  }
+  const metadataPromise = loadSiteMetadata(helpers, axios)
   const { data: sitemap } = await axios.get("/sitemap")
-  return loadNodeRecursive(
-    { createNode, createParentChildLink, createNodeId, createContentDigest },
-    axios,
-    sitemap.root
-  )
+  const nodesPromise = loadNodeRecursive(helpers, axios, sitemap.root)
+  return Promise.all([metadataPromise, nodesPromise])
 }
 
 exports.createSchemaCustomization = ({ actions, schema }) => {
@@ -39,6 +43,22 @@ exports.createSchemaCustomization = ({ actions, schema }) => {
     }`,
     ...concreteTypes,
   ])
+}
+
+async function loadSiteMetadata(actions, axios) {
+  const { createNode, createNodeId, createContentDigest } = actions
+  const { data } = await axios.get("/metadata")
+  const nodeMeta = {
+    id: createNodeId(-1),
+    internal: {
+      type: "Metadata",
+      contentDigest: createContentDigest(data),
+    },
+  }
+  return createNode({
+    ...nodeMeta,
+    ...data,
+  })
 }
 
 async function loadNodeRecursive(actions, axios, sitemapNode, parent = {}) {
