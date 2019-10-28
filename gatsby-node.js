@@ -71,9 +71,9 @@ async function loadNodeRecursive(actions, axios, sitemapNode, parent = {}) {
     createContentDigest,
   } = actions
 
-  const slug = getSlugForSitemapNode(sitemapNode, parent)
+  const path = getPathForSitemapNode(sitemapNode, parent)
   const type = toUpperFirst(sitemapNode.type)
-  const { data } = await axios.get(slug)
+  const { data } = await axios.get(path)
 
   const nodeMeta = {
     id: createNodeId(`umbraco-${sitemapNode.id}`),
@@ -102,10 +102,10 @@ async function loadNodeRecursive(actions, axios, sitemapNode, parent = {}) {
   }
 }
 
-function getSlugForSitemapNode(sitemapNode, parent) {
-  let slug = (parent.slug || "") + "/" + sitemapNode.slug
-  if (slug.indexOf("//") == 0) slug = slug.substr(1)
-  return slug
+function getPathForSitemapNode(sitemapNode, parent) {
+  let path = (parent.slug || "") + "/" + sitemapNode.urlSegment
+  if (path.indexOf("//") == 0) path = path.substr(1)
+  return path
 }
 
 function toUpperFirst(string) {
