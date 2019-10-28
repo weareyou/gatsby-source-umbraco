@@ -39,6 +39,8 @@ exports.createSchemaCustomization = ({ actions, schema }) => {
       parent: Node
       children: [Node!]!
       internal: Internal!
+
+      name: String
       slug: String
     }`,
     ...concreteTypes,
@@ -73,9 +75,6 @@ async function loadNodeRecursive(actions, axios, sitemapNode, parent = {}) {
   const type = toUpperFirst(sitemapNode.type)
   const { data } = await axios.get(slug)
 
-  const umbracoMeta = {
-    slug,
-  }
   const nodeMeta = {
     id: createNodeId(`umbraco-${sitemapNode.id}`),
     parent: parent.id,
@@ -88,7 +87,6 @@ async function loadNodeRecursive(actions, axios, sitemapNode, parent = {}) {
 
   const node = {
     ...nodeMeta,
-    ...umbracoMeta,
     ...data,
   }
   createNode(node)
