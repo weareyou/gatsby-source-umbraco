@@ -49,7 +49,7 @@ exports.createSchemaCustomization = ({ actions, schema }) => {
 
 async function loadSiteMetadata(actions, axios) {
   const { createNode, createNodeId, createContentDigest } = actions
-  const { data } = await axios.get("/metadata")
+  const { data } = await axios.get("/globaldata")
   const nodeMeta = {
     id: createNodeId(-1),
     internal: {
