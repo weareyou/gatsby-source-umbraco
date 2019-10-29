@@ -53,7 +53,7 @@ async function loadSiteMetadata(actions, axios) {
   const nodeMeta = {
     id: createNodeId(-1),
     internal: {
-      type: "Metadata",
+      type: "Global",
       contentDigest: createContentDigest(data),
     },
   }
