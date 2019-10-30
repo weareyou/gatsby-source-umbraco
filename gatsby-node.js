@@ -1,10 +1,14 @@
+const { createRemoteFileNode } = require("gatsby-source-filesystem")
+
 const validateAndPrepOptions = require("./util/validate-and-prep-options")
 const createAndConfigureAxios = require("./util/create-and-configure-axios")
 
 const nodeTypes = []
 
+const imageKeys = ["image"]
+
 exports.sourceNodes = async (
-  { actions, createNodeId, createContentDigest },
+  { actions, createNodeId, createContentDigest, store, cache },
   options
 ) => {
   const { createNode, createParentChildLink } = actions
@@ -15,6 +19,8 @@ exports.sourceNodes = async (
     createParentChildLink,
     createNodeId,
     createContentDigest,
+    store,
+    cache,
   }
   const metadataPromise = loadSiteMetadata(helpers, axios)
   const { data: sitemap } = await axios.get("/sitemap")
@@ -47,8 +53,8 @@ exports.createSchemaCustomization = ({ actions, schema }) => {
   ])
 }
 
-async function loadSiteMetadata(actions, axios) {
-  const { createNode, createNodeId, createContentDigest } = actions
+async function loadSiteMetadata(helpers, axios) {
+  const { createNode, createNodeId, createContentDigest } = helpers
   const { data } = await axios.get("/globaldata")
   const nodeMeta = {
     id: createNodeId(-1),
@@ -63,17 +69,19 @@ async function loadSiteMetadata(actions, axios) {
   })
 }
 
-async function loadNodeRecursive(actions, axios, sitemapNode, parent = {}) {
+async function loadNodeRecursive(helpers, axios, sitemapNode, parent = {}) {
   const {
     createNode,
     createParentChildLink,
     createNodeId,
     createContentDigest,
-  } = actions
+    store,
+    cache,
+  } = helpers
 
   const path = getPathForSitemapNode(sitemapNode, parent)
   const type = toUpperFirst(sitemapNode.type)
-  const { data } = await axios.get(path)
+  let { data } = await axios.get(path)
 
   const nodeMeta = {
     id: createNodeId(`umbraco-${sitemapNode.id}`),
@@ -84,6 +92,8 @@ async function loadNodeRecursive(actions, axios, sitemapNode, parent = {}) {
       contentDigest: createContentDigest(data),
     },
   }
+
+  data = await loadImagesForNode(nodeMeta.id, data, { createNode, createNodeId, store, cache })
 
   const node = {
     ...nodeMeta,
@@ -97,7 +107,7 @@ async function loadNodeRecursive(actions, axios, sitemapNode, parent = {}) {
   if (sitemapNode.children.length > 0) {
     return asyncForEach(
       sitemapNode.children,
-      async n => await loadNodeRecursive(actions, axios, n, node)
+      async n => await loadNodeRecursive(helpers, axios, n, node)
     )
   }
 }
@@ -122,4 +132,29 @@ function registerType(type) {
   if (nodeTypes.indexOf(type) === -1) {
     nodeTypes.push(type)
   }
+}
+
+async function loadImagesForNode(parentNodeId, data, helpers) {
+  const { createNode, createNodeId, cache, store } = helpers
+  const fields = { ...data }
+
+  await asyncForEach(Object.entries(fields), async ([key]) => {
+    if (imageKeys.includes(key)) {
+      const url = data[key]
+      delete fields[key]
+      let fileNode = await createRemoteFileNode({
+        url,
+        parentNodeId,
+        createNode,
+        createNodeId,
+        cache,
+        store,
+      })
+      if (fileNode) {
+        fields[key + "___NODE"] = fileNode.id
+      }
+    }
+  })
+
+  return fields
 }
