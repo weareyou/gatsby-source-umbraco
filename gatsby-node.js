@@ -5,15 +5,21 @@ const createAndConfigureAxios = require("./util/create-and-configure-axios")
 
 const nodeTypes = []
 
-const imageKeys = ["image"]
-
 exports.sourceNodes = async (
-  { actions, createNodeId, createContentDigest, store, cache },
+  { 
+    actions, 
+    createNodeId, 
+    createContentDigest, 
+    store, 
+    cache,
+    reporter,
+  },
   options
 ) => {
   const { createNode, createParentChildLink } = actions
-  options = validateAndPrepOptions(options)
+  options = validateAndPrepOptions(options, reporter)
   const axios = createAndConfigureAxios(options)
+
   const helpers = {
     createNode,
     createParentChildLink,
@@ -22,9 +28,11 @@ exports.sourceNodes = async (
     store,
     cache,
   }
+
   const metadataPromise = loadSiteMetadata(helpers, axios)
   const { data: sitemap } = await axios.get("/sitemap")
-  const nodesPromise = loadNodeRecursive(helpers, axios, sitemap.root)
+  const nodesPromise = loadNodeRecursive(helpers, options, axios, sitemap.root)
+
   return Promise.all([metadataPromise, nodesPromise])
 }
 
@@ -71,7 +79,7 @@ async function loadSiteMetadata(helpers, axios) {
   })
 }
 
-async function loadNodeRecursive(helpers, axios, sitemapNode, parent = {}) {
+async function loadNodeRecursive(helpers, options, axios, sitemapNode, parent = {}) {
   const {
     createNode,
     createParentChildLink,
@@ -95,7 +103,7 @@ async function loadNodeRecursive(helpers, axios, sitemapNode, parent = {}) {
     },
   }
 
-  data = await loadImagesForNode(nodeMeta.id, data, { createNode, createNodeId, store, cache })
+  data = await loadImagesForNode(nodeMeta.id, data, { createNode, createNodeId, store, cache }, options)
 
   const node = {
     ...nodeMeta,
@@ -109,7 +117,7 @@ async function loadNodeRecursive(helpers, axios, sitemapNode, parent = {}) {
   if (sitemapNode.children.length > 0) {
     return asyncForEach(
       sitemapNode.children,
-      async n => await loadNodeRecursive(helpers, axios, n, node)
+      async n => await loadNodeRecursive(helpers, options, axios, n, node)
     )
   }
 }
@@ -136,12 +144,12 @@ function registerType(type) {
   }
 }
 
-async function loadImagesForNode(parentNodeId, data, helpers) {
+async function loadImagesForNode(parentNodeId, data, helpers, options) {
   const { createNode, createNodeId, cache, store } = helpers
   const fields = { ...data }
 
   await asyncForEach(Object.entries(fields), async ([key]) => {
-    if (imageKeys.includes(key)) {
+    if (options.imageKeys.includes(key)) {
       const url = data[key]
       delete fields[key]
       let fileNode = await createRemoteFileNode({
