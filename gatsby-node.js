@@ -149,21 +149,21 @@ function registerType(type) {
 }
 
 async function loadImagesForNode(parentNodeId, data, helpers, options) {
-  const { createNode, createNodeId, cache, store } = helpers
   const fields = { ...data }
-
-  await asyncForEach(Object.entries(fields), async ([key]) => {
-    if (options.imageKeys.includes(key)) {
-      const url = data[key]
-      delete fields[key]
-      let fileNode = await createRemoteFileNode({
-        url,
-        parentNodeId,
-        createNode,
-        createNodeId,
-        cache,
-        store,
+  await asyncForEach(Object.entries(fields), async ([key, value]) => {
+    if (isObject(value)) fields[key] = await loadImagesForNode(parentNodeId, value, helpers, options)
+    else if (isArray(value)) {
+      let newArray = [];
+      await asyncForEach(value, async obj => {
+        const newValue = await loadImagesForNode(parentNodeId, obj, helpers, options)
+        newArray.push(newValue)
       })
+      fields[key] = newArray;
+    }
+    else if (options.imageKeys.includes(key)) {
+      const url = fields[key]
+      delete fields[key]
+      let fileNode = await loadImage(url, parentNodeId, helpers)
       if (fileNode) {
         fields[key + "___NODE"] = fileNode.id
       }
@@ -171,4 +171,26 @@ async function loadImagesForNode(parentNodeId, data, helpers, options) {
   })
 
   return fields
+}
+
+async function loadImage(url, parentNodeId, helpers) {
+  const { createNode, createNodeId, cache, store } = helpers
+  return await createRemoteFileNode({
+    url,
+    parentNodeId,
+    createNode,
+    createNodeId,
+    cache,
+    store,
+  })
+}
+
+function isArray(val) {
+  return Array.isArray(val)
+}
+
+function isObject (value) {
+  if (value === null) return false;
+  if (Array.isArray(value)) return false;
+  return (typeof value === 'object');
 }
