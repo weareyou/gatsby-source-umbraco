@@ -1,5 +1,3 @@
-const path = require('path')
-const fs = require('fs-extra')
 const { createRemoteFileNode } = require("gatsby-source-filesystem")
 
 const validateAndPrepOptions = require("./util/validate-and-prep-options")
