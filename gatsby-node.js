@@ -6,14 +6,7 @@ const createAndConfigureAxios = require("./util/create-and-configure-axios")
 const nodeTypes = []
 
 exports.sourceNodes = async (
-  { 
-    actions, 
-    createNodeId, 
-    createContentDigest, 
-    store, 
-    cache,
-    reporter,
-  },
+  { actions, createNodeId, createContentDigest, store, cache, reporter },
   options
 ) => {
   const { createNode, createParentChildLink } = actions
@@ -79,7 +72,13 @@ async function loadSiteMetadata(helpers, axios) {
   })
 }
 
-async function loadNodeRecursive(helpers, options, axios, sitemapNode, parent = {}) {
+async function loadNodeRecursive(
+  helpers,
+  options,
+  axios,
+  sitemapNode,
+  parent = {}
+) {
   const {
     createNode,
     createParentChildLink,
@@ -103,7 +102,12 @@ async function loadNodeRecursive(helpers, options, axios, sitemapNode, parent = 
     },
   }
 
-  data = await loadImagesForNode(nodeMeta.id, data, { createNode, createNodeId, store, cache }, options)
+  data = await loadImagesForNode(
+    nodeMeta.id,
+    data,
+    { createNode, createNodeId, store, cache },
+    options
+  )
 
   const node = {
     ...nodeMeta,

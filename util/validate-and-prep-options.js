@@ -1,16 +1,15 @@
 const defaultImageKeys = ["image"]
 
-
 module.exports = function validateAndPrepOptions(options, reporter) {
   delete options.plugins
 
   if (!validUrl(options.url)) {
-    throwValidationError('url', options.url, reporter)
+    throwValidationError("url", options.url, reporter)
   }
-  
+
   if (options.imageKeys) {
     if (!validImageKeys(options.imageKeys))
-      throwValidationError('imageKeys', options.imageKeys, reporter)
+      throwValidationError("imageKeys", options.imageKeys, reporter)
   } else {
     options.imageKeys = defaultImageKeys
   }
