@@ -1,3 +1,5 @@
+const path = require('path')
+const fs = require('fs-extra')
 const { createRemoteFileNode } = require("gatsby-source-filesystem")
 
 const validateAndPrepOptions = require("./util/validate-and-prep-options")
@@ -51,6 +53,38 @@ exports.createSchemaCustomization = ({ actions, schema }) => {
     }`,
     ...concreteTypes,
   ])
+}
+
+exports.createResolvers = ({ createResolvers, pathPrefix }) => {
+  const publicStaticDir = path.join(
+    process.cwd(),
+    'public',
+    'static'
+  )
+
+  createResolvers({
+    File: {
+      publicUrl: {
+        type: 'String',
+        description: `Copy file to static directory and return public url to it`,
+        resolve: async src => {
+          const { absolutePath } = src
+          const { ext, name } = path.parse(absolutePath)
+          const filename = name + "--" + src.internal.contentDigest + ext
+          const newPath = path.join(publicStaticDir, filename)
+          
+          try {
+            const exists = await fs.exists(newPath)
+            if (!exists) await fs.copy(absolutePath, newPath)
+            return `${pathPrefix}/static/${filename}`
+          } catch (e) {
+            console.error(`error copying file from ${absolutePath} to ${newPath}`, e)
+            return null
+          }
+        }
+      }
+    }
+  })
 }
 
 async function loadSiteMetadata(helpers, axios) {
