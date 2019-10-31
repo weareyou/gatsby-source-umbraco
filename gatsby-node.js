@@ -55,37 +55,7 @@ exports.createSchemaCustomization = ({ actions, schema }) => {
   ])
 }
 
-exports.createResolvers = ({ createResolvers, pathPrefix }) => {
-  const publicStaticDir = path.join(
-    process.cwd(),
-    'public',
-    'static'
-  )
-
-  createResolvers({
-    File: {
-      publicUrl: {
-        type: 'String',
-        description: `Copy file to static directory and return public url to it`,
-        resolve: async src => {
-          const { absolutePath } = src
-          const { ext, name } = path.parse(absolutePath)
-          const filename = name + "--" + src.internal.contentDigest + ext
-          const newPath = path.join(publicStaticDir, filename)
-          
-          try {
-            const exists = await fs.exists(newPath)
-            if (!exists) await fs.copy(absolutePath, newPath)
-            return `${pathPrefix}/static/${filename}`
-          } catch (e) {
-            console.error(`error copying file from ${absolutePath} to ${newPath}`, e)
-            return null
-          }
-        }
-      }
-    }
-  })
-}
+exports.setFieldsOnGraphQLNodeType = require("gatsby-source-filesystem/extend-file-node")
 
 async function loadSiteMetadata(helpers, axios) {
   const { createNode, createNodeId, createContentDigest } = helpers
