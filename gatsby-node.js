@@ -3,6 +3,7 @@ const { createRemoteFileNode } = require("gatsby-source-filesystem")
 const validateAndPrepOptions = require("./util/validate-and-prep-options")
 const createAndConfigureAxios = require("./util/create-and-configure-axios")
 const { isObject, isArray } = require('./util/typecheck')
+const asyncForEach = require('./util/asyncForEach')
 
 const nodeTypes = []
 
@@ -134,12 +135,6 @@ function getPathForSitemapNode(sitemapNode, parent) {
 
 function toUpperFirst(string) {
   return string.charAt(0).toUpperCase() + string.slice(1)
-}
-
-async function asyncForEach(array, callback) {
-  for (let index = 0; index < array.length; index++) {
-    await callback(array[index], index, array)
-  }
 }
 
 function registerType(type) {
