@@ -1,3 +1,5 @@
+const { isArray, isString } = require('./typecheck')
+
 const defaultImageKeys = ["image"]
 
 module.exports = function validateAndPrepOptions(options, reporter) {
@@ -16,29 +18,12 @@ module.exports = function validateAndPrepOptions(options, reporter) {
 
   return options
 }
-
-/*
- * Validation functions
- */
-
 function validUrl(url) {
-  return typeof url === "string" && url.length > 0
+  return isString(url) && url.length > 0
 }
 
 function validImageKeys(imageKeys) {
   return isArray(imageKeys) && imageKeys.every(isString)
-}
-
-/*
- * Helper functions
- */
-
-function isArray(val) {
-  return Array.isArray(val)
-}
-
-function isString(val) {
-  return typeof val == "string"
 }
 
 function throwValidationError(optionName, value, reporter) {

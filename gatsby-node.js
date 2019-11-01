@@ -2,6 +2,7 @@ const { createRemoteFileNode } = require("gatsby-source-filesystem")
 
 const validateAndPrepOptions = require("./util/validate-and-prep-options")
 const createAndConfigureAxios = require("./util/create-and-configure-axios")
+const { isObject, isArray } = require('./util/typecheck')
 
 const nodeTypes = []
 
@@ -192,14 +193,4 @@ async function loadImage(url, parentNodeId, helpers) {
     )
   }
   return filenode
-}
-
-function isArray(val) {
-  return Array.isArray(val)
-}
-
-function isObject (value) {
-  if (value === null) return false;
-  if (Array.isArray(value)) return false;
-  return (typeof value === 'object');
 }
