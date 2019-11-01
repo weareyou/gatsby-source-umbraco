@@ -20,6 +20,7 @@ exports.sourceNodes = async (
     createContentDigest,
     store,
     cache,
+    reporter,
   }
 
   const metadataPromise = loadSiteMetadata(helpers, axios)
@@ -84,8 +85,6 @@ async function loadNodeRecursive(
     createParentChildLink,
     createNodeId,
     createContentDigest,
-    store,
-    cache,
   } = helpers
 
   const path = getPathForSitemapNode(sitemapNode, parent)
@@ -105,7 +104,7 @@ async function loadNodeRecursive(
   data = await loadImagesForNode(
     nodeMeta.id,
     data,
-    { createNode, createNodeId, store, cache },
+    helpers,
     options
   )
 
@@ -162,9 +161,9 @@ async function loadImagesForNode(parentNodeId, data, helpers, options) {
     }
     else if (options.imageKeys.includes(key)) {
       const url = fields[key]
-      delete fields[key]
       let fileNode = await loadImage(url, parentNodeId, helpers)
       if (fileNode) {
+        delete fields[key]
         fields[key + "___NODE"] = fileNode.id
       }
     }
@@ -174,15 +173,25 @@ async function loadImagesForNode(parentNodeId, data, helpers, options) {
 }
 
 async function loadImage(url, parentNodeId, helpers) {
-  const { createNode, createNodeId, cache, store } = helpers
-  return await createRemoteFileNode({
-    url,
-    parentNodeId,
-    createNode,
-    createNodeId,
-    cache,
-    store,
-  })
+  const { createNode, createNodeId, cache, store, reporter } = helpers
+  let  filenode;
+  try {
+    filenode = await createRemoteFileNode({
+      url,
+      parentNodeId,
+      createNode,
+      createNodeId,
+      cache,
+      store,
+    })
+  } catch (e) {
+    reporter.error(""
+      + `Failed trying to fetch remote file in gatsby-source-umbraco.\n`
+      + `  url: '${url}'\n`
+      + `Falling back to the original value.`
+    )
+  }
+  return filenode
 }
 
 function isArray(val) {
