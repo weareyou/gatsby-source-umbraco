@@ -1,5 +1,6 @@
 const { registerType } = require('./typeRegistry')
 const fetchAndValidateSitemap = require('./fetch-and-validate-sitemap')
+const loadImagesForNode = require('./load-images-for-node')
 
 const asyncForEach = require('./util/asyncForEach')
 
@@ -22,7 +23,7 @@ async function loadNode(helpers, sitemapNode, parent) {
   const { gatsby } = helpers
   const data = await fetchDataForSitemapNode(helpers, sitemapNode)
   const nodeMeta = createGatsbyNodeMeta(gatsby, data, sitemapNode, parent)
-  const fields = data // TODO const fields = await loadImagesForNode(helpers, data, nodeMeta)
+  const fields = await loadImagesForNode(helpers, data, nodeMeta)
 
   const node = {
     ...fields,
