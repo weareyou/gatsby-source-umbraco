@@ -26,3 +26,9 @@ exports.isArray = function (value) {
 exports.isString = function (value) {
   return typeof value === 'string';
 }
+
+exports.isNumber = function (value) {
+  if (isNaN(value)) return false;
+  if (value == Infinity) return false;
+  return typeof value === 'number';
+}
