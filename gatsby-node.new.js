@@ -1,4 +1,5 @@
 const loadUmbracoNodes = require('./load-umbraco-nodes')
+const loadGlobalData = require('./load-global-data')
 const createAndRegisterCommonInterface = require('./create-common-interface')
 
 const validateAndPrepOptions = require('./util/validate-and-prep-options')
@@ -15,7 +16,7 @@ exports.sourceNodes = async (gatsby, pluginOptions) => {
   }
 
   return Promise.all([
-    // TODO loadGlobalData(helpers),
+    loadGlobalData(helpers),
     loadUmbracoNodes(helpers),
   ])
 }
