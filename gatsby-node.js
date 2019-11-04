@@ -1,6 +1,6 @@
-const loadUmbracoNodes = require('./load-umbraco-nodes')
-const loadGlobalData = require('./load-global-data')
-const createAndRegisterCommonInterface = require('./create-common-interface')
+const loadUmbracoNodes = require('./lib/load-umbraco-nodes')
+const loadGlobalData = require('./lib/load-global-data')
+const createAndRegisterCommonInterface = require('./lib/create-common-interface')
 
 const validateAndPrepOptions = require('./util/validate-and-prep-options')
 const createAndConfigureAxios = require("./util/create-and-configure-axios")
