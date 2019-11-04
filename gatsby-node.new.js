@@ -24,3 +24,5 @@ exports.sourceNodes = async (gatsby, pluginOptions) => {
 exports.createSchemaCustomization = gatsby => {
   createAndRegisterCommonInterface(gatsby)
 }
+
+exports.setFieldsOnGraphQLNodeType = require("gatsby-source-filesystem/extend-file-node")
