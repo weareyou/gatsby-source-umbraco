@@ -1,9 +1,8 @@
 const loadUmbracoNodes = require('./lib/load-umbraco-nodes')
 const loadGlobalData = require('./lib/load-global-data')
 const createAndRegisterCommonInterface = require('./lib/create-common-interface')
-
-const validateAndPrepOptions = require('./util/validate-and-prep-options')
-const createAndConfigureAxios = require("./util/create-and-configure-axios")
+const validateAndPrepOptions = require('./lib/validate-and-prep-options')
+const createAndConfigureAxios = require("./lib/create-and-configure-axios")
 
 exports.sourceNodes = async (gatsby, pluginOptions) => {
   const options = validateAndPrepOptions(pluginOptions, gatsby.reporter)
