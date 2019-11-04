@@ -5,7 +5,7 @@ const validateAndPrepOptions = require('./lib/validate-and-prep-options')
 const createAndConfigureAxios = require("./lib/create-and-configure-axios")
 
 exports.sourceNodes = async (gatsby, pluginOptions) => {
-  const options = validateAndPrepOptions(pluginOptions, gatsby.reporter)
+  const options = await validateAndPrepOptions(pluginOptions, gatsby.reporter)
   const axios = createAndConfigureAxios(options)
 
   const helpers = {
