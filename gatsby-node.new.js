@@ -1,4 +1,5 @@
 const loadUmbracoNodes = require('./load-umbraco-nodes')
+const createAndRegisterCommonInterface = require('./create-common-interface')
 
 const validateAndPrepOptions = require('./util/validate-and-prep-options')
 const createAndConfigureAxios = require("./util/create-and-configure-axios")
@@ -19,4 +20,6 @@ exports.sourceNodes = async (gatsby, pluginOptions) => {
   ])
 }
 
-// TODO exports.createSchemaCustomization
+exports.createSchemaCustomization = gatsby => {
+  createAndRegisterCommonInterface(gatsby)
+}
