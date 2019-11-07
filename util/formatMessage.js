@@ -1,7 +1,7 @@
 /**
  * Format a message for logging purposes. If multiple lines are passed, they
  * are joined by a newline character
- * 
+ *
  * @param {...String} lines
  */
 module.exports = (...lines) => {
