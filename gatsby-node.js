@@ -17,8 +17,9 @@ exports.sourceNodes = async (gatsby, pluginOptions) => {
   return Promise.all([loadGlobalData(helpers), loadUmbracoNodes(helpers)])
 }
 
-exports.createSchemaCustomization = gatsby => {
-  createAndRegisterCommonInterface(gatsby)
+exports.createSchemaCustomization = async (gatsby, pluginOptions) => {
+  const options = await validateAndPrepOptions(pluginOptions, gatsby.reporter)
+  createAndRegisterCommonInterface(gatsby, options)
 }
 
 exports.setFieldsOnGraphQLNodeType = require("gatsby-source-filesystem/extend-file-node")
