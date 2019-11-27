@@ -1,4 +1,4 @@
-# Gatsby source Umbraco
+# Gatsby source Umbraco &middot; [![GitHub release (latest by date)](https://img.shields.io/github/v/release/weareyou/gatsby-source-umbraco)](https://github.com/weareyou/gatsby-source-umbraco/releases) [![GitHub license](https://img.shields.io/github/license/weareyou/gatsby-source-umbraco)](#license) ![dependencies](https://img.shields.io/david/weareyou/gatsby-source-umbraco) ![last commit](https://img.shields.io/github/last-commit/weareyou/gatsby-source-umbraco)
 
 A source plugin for pulling content and media from [Umbraco](https://umbraco.com/) into [Gatsby](https://www.gatsbyjs.org/).
 
