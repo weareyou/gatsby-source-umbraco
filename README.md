@@ -747,3 +747,6 @@ exports.createSchemaCustomization = gatsby => {
 
 Notice the `@infer` directive used on the type definitions. This directive tells Gatsby to continue using [automatic type inference]( https://www.gatsbyjs.org/docs/schema-customization/#automatic-type-inference ) for a type, that way your type definitions don't have to include all of the fields for each type, which keeps the code a bit more concise. The [`@nodeInterface`]( https://www.gatsbyjs.org/docs/schema-customization/#queryable-interfaces-with-the-nodeinterface-extension ) directive tells Gatsby to treat this interface as if it were a top-level node type, allowing you to query for it.
 
+## License
+
+gatsby-source-umbraco is [MIT licensed](./LICENSE).
