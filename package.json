@@ -8,7 +8,7 @@
     "gatsby-plugin",
     "gatsby-source-plugin"
   ],
-  "license": "UNLICENSED",
+  "license": "MIT",
   "main": "gatsby-node.js",
   "scripts": {
     "format": "prettier --write \"**/*.js\"",
