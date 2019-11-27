@@ -34,6 +34,7 @@ This plugin is meant to be used when building a custom API on top of Umbraco—i
 - [Tips](#tips)
   - [Absolute Media URL provider](#absolute-media-url-provider)
   - [Group content items using GraphQL interfaces](#group-content-items-using-graphql-interfaces)
+- [License](#license)
 
 ## Basic usage
 
