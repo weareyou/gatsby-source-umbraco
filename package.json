@@ -1,6 +1,6 @@
 {
   "name": "gatsby-source-umbraco",
-  "version": "0.1.0",
+  "version": "v1.0.0-alpha",
   "description": "A source plugin for pulling content and media from Umbraco into Gatsby.",
   "keywords": [
     "gatsby",
