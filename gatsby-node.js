@@ -13,11 +13,7 @@ exports.sourceNodes = async (gatsby, pluginOptions) => {
     options,
   }
 
-  return loadUmbracoNodes(helpers)
-}
-
-exports.createSchemaCustomization = async (gatsby, pluginOptions) => {
-  const options = await validateAndPrepOptions(pluginOptions, gatsby.reporter)
+  await loadUmbracoNodes(helpers)
   createAndRegisterCommonInterface(gatsby, options)
 }
 
